@@ -1,0 +1,25 @@
+projects:
+  fms3main:
+    path: .
+    url: git@github.com:openfms/openfms-main.git
+  
+  protos:
+    path: protos
+    url: git@github.com:openfms/protos.git
+  
+  avldb-migrations:
+    path: migrations/avldb
+    url: git@github.com:openfms/avldb.git
+
+  teltonika-device:
+    path: device/teltonika
+    url: git@github.com:openfms/teltonika-device.git
+
+  tracking-api:
+    path: fmsapi/tracking-api
+    url: git@github.com:openfms/tracking-api.git
+  
+tasks:
+  hello:
+  desc: Print Hello World
+  cmd: echo "Hello World"
