@@ -102,7 +102,9 @@ services:
         GO_VERSION: "1.20"
     environment:
       TRACKING_ENDPOINT: "tracking-api:6000"
-    command: [ "start", "-p", "8080" ]
+    command: [ "start", "-p", "5000" ]
+    ports:
+      - "8080:5000"
     networks:
       - netonika
     depends_on:
