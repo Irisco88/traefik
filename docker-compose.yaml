@@ -92,6 +92,24 @@ services:
         condition: service_started
     restart: always
 
+  grpc-gateway:
+    image: grpc-gateway:latest
+    container_name: grpc-gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"
+    environment:
+      TRACKING_ENDPOINT: "tracking-api:6000"
+    command: [ "start", "-p", "8080" ]
+    networks:
+      - netonika
+    depends_on:
+      tracking-api:
+        condition: service_started
+    restart: always
+
 networks:
   netonika:
     driver: bridge
