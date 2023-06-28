@@ -24,7 +24,7 @@ services:
     mem_reservation: 1G
 
   avldb-migrations:
-    image: avldb/migrations:latest
+    image: avldb-migrations:latest
     container_name: avldb-migrations
     build:
       context: ./migrations/avldb
