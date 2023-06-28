@@ -74,6 +74,24 @@ services:
         condition: service_completed_successfully
     restart: always
 
+  tracking-api:
+    image: tracking-api:latest
+    container_name: tracking-api
+    build:
+      context: ./fmsapi/tracking-api
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"
+    environment:
+      NATS: "nats:4222"
+    command: [ "tracking", "-p", "6000" ]
+    networks:
+      - netonika
+    depends_on:
+      nats:
+        condition: service_started
+    restart: always
+
 networks:
   netonika:
     driver: bridge
