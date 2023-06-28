@@ -6,24 +6,29 @@ projects:
   protos:
     path: protos
     url: git@github.com:openfms/protos.git
+    desc: all protos of system
   
   avldb-migrations:
     path: migrations/avldb
     url: git@github.com:openfms/avldb.git
+    desc: avl db clickhouse migrations
 
   teltonika-device:
     path: device/teltonika
     url: git@github.com:openfms/teltonika-device.git
+    desc: teltonika device service
 
   tracking-api:
     path: fmsapi/tracking-api
     url: git@github.com:openfms/tracking-api.git
+    desc: tracking api
 
   gateway:
     path: gateway
     url: git@github.com:openfms/gateway.git
+    desc: grpc gateway
   
 tasks:
   hello:
-  desc: Print Hello World
-  cmd: echo "Hello World"
+    desc: Print Hello World
+    cmd: echo "Hello World"
