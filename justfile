@@ -15,3 +15,8 @@ dcompose-stop:
 # down and clean all compose file containers
 dcompose-clean:
     docker compose -f {{composeFile}} --env-file {{composeEnvFile}} down --volumes --remove-orphans --rmi local
+
+# run docker compose build
+dcompose-build:
+    @echo "run docker compose build"
+    docker compose -f {{composeFile}} --env-file {{composeEnvFile}} build
