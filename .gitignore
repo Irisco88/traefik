@@ -19,3 +19,12 @@
 
 # Go workspace file
 go.work
+# mani #
+fmsapi/tracking-api
+device/teltonika
+migrations/avldb
+protos
+.
+.idea
+.vscode
+# mani #

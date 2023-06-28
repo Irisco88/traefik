@@ -18,6 +18,10 @@ projects:
   tracking-api:
     path: fmsapi/tracking-api
     url: git@github.com:openfms/tracking-api.git
+
+  gateway:
+    path: gateway
+    url: git@github.com:openfms/gateway.git
   
 tasks:
   hello:
