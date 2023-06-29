@@ -84,6 +84,7 @@ services:
         GO_VERSION: "1.20"
     environment:
       NATS: "nats:4222"
+      LOG_REQUESTS: true
     command: [ "tracking", "-p", "6000" ]
     networks:
       - netonika
