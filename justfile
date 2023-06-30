@@ -19,4 +19,4 @@ dcompose-clean:
 # run docker compose build
 dcompose-build:
     @echo "run docker compose build"
-    docker compose -f {{composeFile}} --env-file {{composeEnvFile}} build
+    docker compose -f {{composeFile}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN" --no-parallel

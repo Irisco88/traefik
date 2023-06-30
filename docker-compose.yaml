@@ -2,7 +2,7 @@ version: "3.9"
 services:
   clickhousedb:
     image: clickhouse/clickhouse-server:latest
-    container_name: teltonika-clickhouse
+    container_name: openfms-clickhouse
     ports:
       - ${CH_HTTP_PORT:-8123}:8123
       - ${CH_PORT:-9000}:9000
@@ -23,9 +23,31 @@ services:
     mem_limit: 2G
     mem_reservation: 1G
 
+  postgresdb:
+    image: postgres:latest
+    container_name: openfms-postgres
+    ports:
+      - ${PGDB_PORT:-5432}:5432
+    volumes:
+      - pgdb-volume:/data/postgres
+    environment:
+      POSTGRES_USER: ${PGDB_USER:-admin}
+      POSTGRES_PASSWORD: ${PGDB_PASSWORD:-12345678}
+      POSTGRES_DB: ${PGDB_NAME:-pgdb}
+      PGDATA: /data/postgres
+
+    networks:
+      - netonika
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-h", "postgresdb","-p","5432","-d","${PGDB_NAME:-pgdb}","-U","${PGDB_USER:-admin}", "-q" ]
+      timeout: 20s
+      interval: 3s
+      retries: 15
+    restart: always
+
   avldb-migrations:
     image: avldb-migrations:latest
-    container_name: avldb-migrations
+    container_name: openfms-avldb-migrations
     build:
       context: ./migrations/avldb
       dockerfile: Dockerfile
@@ -42,7 +64,7 @@ services:
 
   nats:
     image: nats:latest
-    container_name: teltonika-nats
+    container_name: openfms-nats
     ports:
       - ${NATS_PORT:-4222}:4222
       - ${NATS_HTTP_PORT:-8222}:8222
@@ -51,7 +73,7 @@ services:
 
   teltonika-device:
     image: teltonikadevice:latest
-    container_name: teltonika-device
+    container_name: openfms-teltonika-device
     build:
       context: ./device/teltonika
       dockerfile: Dockerfile
@@ -76,7 +98,7 @@ services:
 
   tracking-api:
     image: tracking-api:latest
-    container_name: tracking-api
+    container_name: openfms-tracking
     build:
       context: ./fmsapi/tracking-api
       dockerfile: Dockerfile
@@ -85,17 +107,23 @@ services:
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
+      AVLDB_CLICKHOUSE: clickhouse://${CH_USER:-admin}:${CH_PASSWORD:-12345678}@clickhousedb:9000/default?dial_timeout=200ms&max_execution_time=60
+      FMSDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
     command: [ "tracking", "-p", "6000" ]
     networks:
       - netonika
     depends_on:
       nats:
         condition: service_started
+      postgresdb:
+        condition: service_healthy
+      avldb-migrations:
+        condition: service_completed_successfully
     restart: always
 
   grpc-gateway:
     image: grpc-gateway:latest
-    container_name: grpc-gateway
+    container_name: openfms-gateway
     build:
       context: ./gateway
       dockerfile: Dockerfile
@@ -118,3 +146,4 @@ networks:
     driver: bridge
 volumes:
   clickhouse-volume:
+  pgdb-volume:
