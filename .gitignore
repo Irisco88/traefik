@@ -7,7 +7,9 @@
 *.dll
 *.so
 *.dylib
-
+.idea
+.vscode
+clientest
 # Test binary, built with `go test -c`
 *.test
 
@@ -21,10 +23,10 @@
 go.work
 # mani #
 gateway
+user-api
 fmsapi/tracking-api
 device/teltonika
 migrations/avldb
 protos
-.idea
-.vscode
+.
 # mani #

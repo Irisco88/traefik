@@ -23,6 +23,11 @@ projects:
     url: git@github.com:openfms/tracking-api.git
     desc: tracking api
 
+  user-api:
+    path: user-api
+    url: git@github.com:openfms/user-api.git
+    desc: user api
+
   gateway:
     path: gateway
     url: git@github.com:openfms/gateway.git
