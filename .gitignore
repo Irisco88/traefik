@@ -23,6 +23,7 @@ clientest
 go.work
 # mani #
 gateway
+migrations/user-db
 user-api
 fmsapi/tracking-api
 device/teltonika
