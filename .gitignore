@@ -23,6 +23,7 @@ clientest
 go.work
 # mani #
 gateway
+authutil
 migrations/user-db
 user-api
 fmsapi/tracking-api

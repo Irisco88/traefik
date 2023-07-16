@@ -33,6 +33,11 @@ projects:
     url: git@github.com:openfms/user-db.git
     desc: user api
 
+  authutil:
+    path: authutil
+    url: git@github.com:openfms/authutil.git
+    desc: auth util
+
   gateway:
     path: gateway
     url: git@github.com:openfms/gateway.git
