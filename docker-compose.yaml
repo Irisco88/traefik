@@ -62,6 +62,23 @@ services:
     networks:
       - netonika
 
+  userdb-migrations:
+    image: userdb-migrations:latest
+    container_name: openfms-userdb-migrations
+    build:
+      context: ./migrations/user-db
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_DRIVER: pgx
+      MIGRATIONS_PATH: migrations/sqls
+      DATABASE_URL: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
+    command: [ "up" ]
+    depends_on:
+      clickhousedb:
+        condition: service_healthy
+    networks:
+      - netonika
+
   nats:
     image: nats:latest
     container_name: openfms-nats
@@ -121,6 +138,30 @@ services:
         condition: service_completed_successfully
     restart: always
 
+  user-api:
+    image: user-api:latest
+    container_name: openfms-userapi
+    build:
+      context: ./user-api
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"
+    environment:
+      NATS: "nats:4222"
+      LOG_REQUESTS: true
+      USERDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
+    command: [ "user", "-p", "6000" ]
+    networks:
+      - netonika
+    depends_on:
+      nats:
+        condition: service_started
+      postgresdb:
+        condition: service_healthy
+      avldb-migrations:
+        condition: service_completed_successfully
+    restart: always
+
   grpc-gateway:
     image: grpc-gateway:latest
     container_name: openfms-gateway
@@ -131,6 +172,7 @@ services:
         GO_VERSION: "1.20"
     environment:
       TRACKING_ENDPOINT: "tracking-api:6000"
+      USER_ENDPOINT: "user-api:6000"
     command: [ "start", "-p", "5000" ]
     ports:
       - "8080:5000"
