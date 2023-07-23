@@ -124,6 +124,8 @@ services:
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
+      DOMAIN: ${DOMAIN}
+      JWT_SECRET: ${JWT_SECRET}
       AVLDB_CLICKHOUSE: clickhouse://${CH_USER:-admin}:${CH_PASSWORD:-12345678}@clickhousedb:9000/default?dial_timeout=200ms&max_execution_time=60
       FMSDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
     command: [ "tracking", "-p", "6000" ]
@@ -149,6 +151,8 @@ services:
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
+      DOMAIN: ${DOMAIN}
+      JWT_SECRET: ${JWT_SECRET}
       USERDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
     command: [ "user", "-p", "6000" ]
     networks:
