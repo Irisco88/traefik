@@ -46,7 +46,7 @@ services:
     restart: always
 
   avldb-migrations:
-    image: avldb-migrations:latest
+    image: openfms/avldb-migrations:latest
     container_name: openfms-avldb-migrations
     build:
       context: ./migrations/avldb
@@ -63,7 +63,7 @@ services:
       - netonika
 
   userdb-migrations:
-    image: userdb-migrations:latest
+    image: openfms/userdb-migrations:latest
     container_name: openfms-userdb-migrations
     build:
       context: ./migrations/user-db
@@ -89,7 +89,7 @@ services:
       - netonika
 
   teltonika-device:
-    image: teltonikadevice:latest
+    image: openfms/teltonikadevice:latest
     container_name: openfms-teltonika-device
     build:
       context: ./device/teltonika
@@ -114,7 +114,7 @@ services:
     restart: always
 
   tracking-api:
-    image: tracking-api:latest
+    image: openfms/tracking-api:latest
     container_name: openfms-tracking
     build:
       context: ./fmsapi/tracking-api
@@ -141,7 +141,7 @@ services:
     restart: always
 
   user-api:
-    image: user-api:latest
+    image: openfms/user-api:latest
     container_name: openfms-userapi
     build:
       context: ./user-api
@@ -167,7 +167,7 @@ services:
     restart: always
 
   grpc-gateway:
-    image: grpc-gateway:latest
+    image: openfms/grpc-gateway:latest
     container_name: openfms-gateway
     build:
       context: ./gateway
