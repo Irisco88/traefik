@@ -185,6 +185,8 @@ services:
     depends_on:
       tracking-api:
         condition: service_started
+      user-api:
+        condition: service_started
     restart: always
 
 networks:
