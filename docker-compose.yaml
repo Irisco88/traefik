@@ -16,11 +16,10 @@ services:
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
       CLICKHOUSE_DB: ${CH_DB:-default}
     healthcheck:
-      test: [ "CMD","wget","-q","clickhousedb:8123/ping" ]
+      test: [ "CMD-SHELL", "clickhouse-client --query 'SELECT 1'" ]
       interval: 3s
       timeout: 45s
       retries: 15
-    mem_limit: 2G
     mem_reservation: 1G
 
   minio:
@@ -40,6 +39,11 @@ services:
     volumes:
       - ./minio:/data
     command: server /data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      interval: 3s
+      timeout: 45s
+      retries: 15
 
   postgresdb:
     image: postgres:12-alpine3.18
@@ -63,7 +67,7 @@ services:
     restart: always
 
   nats:
-    image: nats:alpine3.18
+    image: nats:2.9.20-linux
     container_name: openfms-nats
     ports:
       - ${NATS_PORT:-4222}:4222
