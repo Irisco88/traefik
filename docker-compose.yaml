@@ -40,7 +40,7 @@ services:
       - ./minio:/data
     command: server /data
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1" ]
       interval: 3s
       timeout: 45s
       retries: 15
@@ -174,6 +174,11 @@ services:
       LOG_REQUESTS: true
       DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_AVATARS_BUCKET: "avatars"
+      MINIO_ACCESS_KEY: "StTsqPyvT8n34qD1m45U"
+      MINIO_SECRET_KEY: "PuMDCJFYbEKNVd7mUYgzAWfPxMW9t8LmsmqZ3Ev3"
+      USER_HTTP_PORT: "8000"
       USERDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
     command: [ "user", "-p", "6000" ]
     networks:
@@ -198,6 +203,7 @@ services:
     environment:
       TRACKING_ENDPOINT: "tracking-api:6000"
       USER_ENDPOINT: "user-api:6000"
+      USER_HTTP_ENDPOINT: "user-api:8000"
     command: [ "start", "-p", "5000" ]
     ports:
       - "8080:5000"
