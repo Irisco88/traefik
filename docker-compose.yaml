@@ -21,6 +21,8 @@ services:
       timeout: 45s
       retries: 15
     mem_reservation: 1G
+    labels:
+      - traefik.enable=false
 
   minio:
     image: minio/minio:RELEASE.2023-07-21T21-12-44Z
@@ -44,6 +46,8 @@ services:
       interval: 3s
       timeout: 45s
       retries: 15
+    labels:
+      - traefik.enable=false
 
   postgresdb:
     image: postgres:12-alpine3.18
@@ -65,6 +69,8 @@ services:
       interval: 3s
       retries: 15
     restart: always
+    labels:
+      - traefik.enable=false
 
   nats:
     image: nats:2.9.20-linux
@@ -74,6 +80,8 @@ services:
       - ${NATS_HTTP_PORT:-8222}:8222
     networks:
       - fmsnet
+    labels:
+      - traefik.enable=false
 
   avldb-migrations:
     image: openfms/avldb-migrations:latest
@@ -91,6 +99,8 @@ services:
         condition: service_healthy
     networks:
       - fmsnet
+    labels:
+      - traefik.enable=false
 
   userdb-migrations:
     image: openfms/userdb-migrations:latest
@@ -108,6 +118,8 @@ services:
         condition: service_healthy
     networks:
       - fmsnet
+    labels:
+      - traefik.enable=false
 
   teltonika-device:
     image: openfms/teltonikadevice:latest
@@ -133,6 +145,8 @@ services:
       avldb-migrations:
         condition: service_completed_successfully
     restart: always
+    labels:
+      - traefik.enable=false
 
   tracking-api:
     image: openfms/tracking-api:latest
@@ -160,6 +174,8 @@ services:
       avldb-migrations:
         condition: service_completed_successfully
     restart: always
+    labels:
+      - traefik.enable=false
 
   user-api:
     image: openfms/user-api:latest
@@ -191,6 +207,12 @@ services:
       avldb-migrations:
         condition: service_completed_successfully
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-api.entrypoints=web"
+      - "traefik.http.routers.user-api.rule=PathPrefix(`/api/v1/user/avatar`)"
+      - "traefik.http.services.user-api.loadbalancer.server.port=8000"
+      - "traefik.docker.network=fmsnet"
 
   grpc-gateway:
     image: openfms/grpc-gateway:latest
@@ -206,7 +228,7 @@ services:
       USER_HTTP_ENDPOINT: "user-api:8000"
     command: [ "start", "-p", "5000" ]
     ports:
-      - "8080:5000"
+      - "7070:5000"
     networks:
       - fmsnet
     depends_on:
@@ -215,6 +237,31 @@ services:
       user-api:
         condition: service_started
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grpc-gateway.entrypoints=web"
+      - "traefik.http.routers.grpc-gateway.rule=PathPrefix(`/api/v1`)"
+      - "traefik.http.services.grpc-gateway.loadbalancer.server.port=5000"
+      - "traefik.docker.network=fmsnet"
+
+  traefik:
+    image: traefik:v3.0
+    container_name: openfms-traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    #      - "--providers.docker.useBindPortIP=true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - fmsnet
 
 networks:
   fmsnet:
