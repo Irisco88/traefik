@@ -47,7 +47,21 @@ services:
       timeout: 45s
       retries: 15
     labels:
-      - traefik.enable=false
+      - "traefik.enable=false"
+#      - "traefik.docker.network=fmsnet"
+#
+#      - "traefik.http.routers.minio.service=minio"
+#      - "traefik.http.routers.minio.entrypoints=web"
+#      - "traefik.http.routers.minio.rule=Host(`minio.openfms.com`)"
+#      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+#      - "traefik.http.routers.minio.tls=false"
+#
+#      - "traefik.http.routers.minioconsole.service=minioconsole"
+#      - "traefik.http.routers.minioconsole.entrypoints=web"
+#      - "traefik.http.routers.minioconsole.rule=Host(`minioweb.openfms.com`)"
+#      - "traefik.http.services.minioconsole.loadbalancer.server.port=9001"
+#      - "traefik.http.routers.minioconsole.tls=false"
+
 
   postgresdb:
     image: postgres:12-alpine3.18
@@ -245,7 +259,7 @@ services:
       - "traefik.docker.network=fmsnet"
 
   traefik:
-    image: traefik:v3.0
+    image: traefik:v2.9.10
     container_name: openfms-traefik
     ports:
       - "80:80"
