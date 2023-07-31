@@ -201,8 +201,6 @@ services:
       dockerfile: Dockerfile
       args:
         GO_VERSION: "1.20"
-    ports:
-      - "9070:8000"
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
@@ -244,10 +242,8 @@ services:
     environment:
       TRACKING_ENDPOINT: "tracking-api:6000"
       USER_ENDPOINT: "user-api:6000"
-      USER_HTTP_ENDPOINT: "user-api:8000"
+      USER_HTTP_ENDPOINT: "http://user-api:8000"
     command: [ "start", "-p", "5000" ]
-    ports:
-      - "7070:5000"
     networks:
       - fmsnet
     depends_on:
