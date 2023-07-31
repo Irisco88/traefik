@@ -47,20 +47,22 @@ services:
       timeout: 45s
       retries: 15
     labels:
-      - "traefik.enable=false"
-#      - "traefik.docker.network=fmsnet"
-#
-#      - "traefik.http.routers.minio.service=minio"
-#      - "traefik.http.routers.minio.entrypoints=web"
-#      - "traefik.http.routers.minio.rule=Host(`minio.openfms.com`)"
-#      - "traefik.http.services.minio.loadbalancer.server.port=9000"
-#      - "traefik.http.routers.minio.tls=false"
-#
-#      - "traefik.http.routers.minioconsole.service=minioconsole"
-#      - "traefik.http.routers.minioconsole.entrypoints=web"
-#      - "traefik.http.routers.minioconsole.rule=Host(`minioweb.openfms.com`)"
-#      - "traefik.http.services.minioconsole.loadbalancer.server.port=9001"
-#      - "traefik.http.routers.minioconsole.tls=false"
+      - "traefik.enable=true"
+      - "traefik.docker.network=fmsnet"
+
+      - "traefik.http.routers.minio.service=minio"
+      - "traefik.http.routers.minio.entrypoints=web"
+      - "traefik.http.routers.minio.rule=Host(`minio.openfms.com`)"
+      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+      - "traefik.http.routers.minio.tls=false"
+      - "traefik.http.services.minio_service.loadbalancer.passhostheader=true"
+
+      - "traefik.http.routers.minioconsole.service=minioconsole"
+      - "traefik.http.routers.minioconsole.entrypoints=web"
+      - "traefik.http.routers.minioconsole.rule=Host(`minioweb.openfms.com`)"
+      - "traefik.http.services.minioconsole.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minioconsole.tls=false"
+
 
 
   postgresdb:
@@ -199,6 +201,8 @@ services:
       dockerfile: Dockerfile
       args:
         GO_VERSION: "1.20"
+    ports:
+      - "9070:8000"
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
@@ -209,11 +213,16 @@ services:
       MINIO_ACCESS_KEY: "StTsqPyvT8n34qD1m45U"
       MINIO_SECRET_KEY: "PuMDCJFYbEKNVd7mUYgzAWfPxMW9t8LmsmqZ3Ev3"
       USER_HTTP_PORT: "8000"
+      USER_AVATAR_MAX_SIZE: "5242880"
       USERDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
     command: [ "user", "-p", "6000" ]
     networks:
       - fmsnet
+    volumes:
+      - "/tmp:/tmp"
     depends_on:
+      minio:
+        condition: service_healthy
       nats:
         condition: service_started
       postgresdb:
@@ -222,11 +231,7 @@ services:
         condition: service_completed_successfully
     restart: always
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.user-api.entrypoints=web"
-      - "traefik.http.routers.user-api.rule=PathPrefix(`/api/v1/user/avatar`)"
-      - "traefik.http.services.user-api.loadbalancer.server.port=8000"
-      - "traefik.docker.network=fmsnet"
+      - "traefik.enable=false"
 
   grpc-gateway:
     image: openfms/grpc-gateway:latest
