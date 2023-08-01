@@ -187,8 +187,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       MINIO_ENDPOINT: "minio:9000"
       MINIO_AVATARS_BUCKET: "avatars"
-      MINIO_ACCESS_KEY: "StTsqPyvT8n34qD1m45U"
-      MINIO_SECRET_KEY: "PuMDCJFYbEKNVd7mUYgzAWfPxMW9t8LmsmqZ3Ev3"
+      MINIO_ACCESS_KEY: "adminio"
+      MINIO_SECRET_KEY: "minioadmin2023"
       USER_HTTP_PORT: "8000"
       USER_AVATAR_MAX_SIZE: "5242880"
       USERDB_POSTGRES: postgres://${PGDB_USER:-admin}:${PGDB_PASSWORD:-12345678}@postgresdb:5432/${PGDB_NAME:-pgdb}?sslmode=disable
