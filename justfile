@@ -1,5 +1,7 @@
 composeFile := "docker-compose.yaml"
 composeEnvFile := "compose.env"
+composeProduction := "compose.prod.yaml"
+composeBuild := "compose.build.yaml"
 
 # run docker compose up
 dcompose-up:
@@ -16,11 +18,17 @@ dcompose-stop:
 dcompose-clean:
     docker compose -f {{composeFile}} --env-file {{composeEnvFile}} down --volumes --remove-orphans --rmi local
 
-# run docker compose build
+# builds docker images
 dcompose-build:
-    @echo "run docker compose build"
-    docker compose -f {{composeFile}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
+    @echo "build docker compose images"
+    docker compose -f {{composeFile}} -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
 
+# run production images
 prod-up:
     @echo "run production images"
-    docker compose -f docker-compose.yaml -f compose.prod.yaml --env-file compose.env up -d
+    docker compose -f {{composeFile}} -f {{composeProduction}} --env-file {{composeEnvFile}} up -d
+
+# build production images
+prod-build:
+    @echo "run docker compose build"
+    docker compose -f {{composeFile}} -f {{composeProduction}}  -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
