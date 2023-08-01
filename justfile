@@ -20,3 +20,7 @@ dcompose-clean:
 dcompose-build:
     @echo "run docker compose build"
     docker compose -f {{composeFile}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
+
+prod-up:
+    @echo "run production images"
+    docker compose -f docker-compose.yaml -f compose.prod.yaml --env-file compose.env up -d
