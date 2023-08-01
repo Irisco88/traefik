@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  avldb-migrations:
+    build:
+      context: ./migrations/avldb
+      dockerfile: Dockerfile
+
+  userdb-migrations:
+    build:
+      context: ./migrations/user-db
+      dockerfile: Dockerfile
+
+  teltonika-device:
+    build:
+      context: ./device/teltonika
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"
+
+  tracking-api:
+    build:
+      context: ./fmsapi/tracking-api
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"
+
+  user-api:
+    build:
+      context: ./user-api
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"
+
+  grpc-gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+      args:
+        GO_VERSION: "1.20"

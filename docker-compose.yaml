@@ -102,9 +102,6 @@ services:
   avldb-migrations:
     image: openfms/avldb-migrations:latest
     container_name: openfms-avldb-migrations
-    build:
-      context: ./migrations/avldb
-      dockerfile: Dockerfile
     environment:
       DATABASE_DRIVER: clickhouse
       MIGRATIONS_PATH: migrations/sqls
@@ -121,9 +118,6 @@ services:
   userdb-migrations:
     image: openfms/userdb-migrations:latest
     container_name: openfms-userdb-migrations
-    build:
-      context: ./migrations/user-db
-      dockerfile: Dockerfile
     environment:
       DATABASE_DRIVER: pgx
       MIGRATIONS_PATH: migrations/sqls
@@ -140,11 +134,6 @@ services:
   teltonika-device:
     image: openfms/teltonikadevice:latest
     container_name: openfms-teltonika-device
-    build:
-      context: ./device/teltonika
-      dockerfile: Dockerfile
-      args:
-        GO_VERSION: "1.20"
     ports:
       - ${DEVICE_SRV_PORT:-6060}:3000
     environment:
@@ -167,11 +156,6 @@ services:
   tracking-api:
     image: openfms/tracking-api:latest
     container_name: openfms-tracking
-    build:
-      context: ./fmsapi/tracking-api
-      dockerfile: Dockerfile
-      args:
-        GO_VERSION: "1.20"
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
@@ -196,11 +180,6 @@ services:
   user-api:
     image: openfms/user-api:latest
     container_name: openfms-userapi
-    build:
-      context: ./user-api
-      dockerfile: Dockerfile
-      args:
-        GO_VERSION: "1.20"
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
@@ -234,11 +213,6 @@ services:
   grpc-gateway:
     image: openfms/grpc-gateway:latest
     container_name: openfms-gateway
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-      args:
-        GO_VERSION: "1.20"
     environment:
       TRACKING_ENDPOINT: "tracking-api:6000"
       USER_ENDPOINT: "user-api:6000"
