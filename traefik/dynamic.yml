@@ -1,0 +1,53 @@
+http:
+  routers:
+    gateway:
+      entryPoints:
+        - web
+      rule: "PathPrefix(`/api/v1`)"
+      service: "grpc-gateway"
+      middlewares:
+        - "cors"
+
+    minio-storage:
+      rule: "Host(`minio.openfms.com`)"
+      service: minio-s3
+      entryPoints:
+        - web
+
+    minio-console:
+      rule: "Host(`minioweb.openfms.com`)"
+      service: minio-dashboard
+      entryPoints:
+        - web
+
+  services:
+    grpc-gateway:
+      loadBalancer:
+        servers:
+          - url: "http://grpc-gateway:5000"
+
+    minio-s3:
+      loadBalancer:
+        servers:
+          - url: "http://openfms-minio:9000"
+        passHostHeader: true
+
+    minio-dashboard:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: "http://openfms-minio:9001"
+
+  middlewares:
+    cors:
+      headers:
+        customResponseHeaders:
+          Access-Control-Allow-Headers: "Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
+          Access-Control-Allow-Origin: "*"
+          Access-Control-Allow-Methods: "GET,POST,DELETE,OPTIONS,PUT"
+
+        accessControlAllowMethods: "GET,POST,DELETE,OPTIONS,PUT"
+        accessControlAllowHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
+        accessControlAllowOriginList: "*"
+        accessControlMaxAge: 100
+        addVaryHeader: true

@@ -21,8 +21,6 @@ services:
       timeout: 45s
       retries: 15
     mem_reservation: 1G
-    labels:
-      - traefik.enable=false
 
   minio:
     image: minio/minio:RELEASE.2023-07-21T21-12-44Z
@@ -46,24 +44,6 @@ services:
       interval: 3s
       timeout: 45s
       retries: 15
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=fmsnet"
-
-      - "traefik.http.routers.minio.service=minio"
-      - "traefik.http.routers.minio.entrypoints=web"
-      - "traefik.http.routers.minio.rule=Host(`minio.openfms.com`)"
-      - "traefik.http.services.minio.loadbalancer.server.port=9000"
-      - "traefik.http.routers.minio.tls=false"
-      - "traefik.http.services.minio_service.loadbalancer.passhostheader=true"
-
-      - "traefik.http.routers.minioconsole.service=minioconsole"
-      - "traefik.http.routers.minioconsole.entrypoints=web"
-      - "traefik.http.routers.minioconsole.rule=Host(`minioweb.openfms.com`)"
-      - "traefik.http.services.minioconsole.loadbalancer.server.port=9001"
-      - "traefik.http.routers.minioconsole.tls=false"
-
-
 
   postgresdb:
     image: postgres:12-alpine3.18
@@ -96,8 +76,6 @@ services:
       - ${NATS_HTTP_PORT:-8222}:8222
     networks:
       - fmsnet
-    labels:
-      - traefik.enable=false
 
   avldb-migrations:
     image: openfms/avldb-migrations:latest
@@ -112,8 +90,6 @@ services:
         condition: service_healthy
     networks:
       - fmsnet
-    labels:
-      - traefik.enable=false
 
   userdb-migrations:
     image: openfms/userdb-migrations:latest
@@ -128,8 +104,6 @@ services:
         condition: service_healthy
     networks:
       - fmsnet
-    labels:
-      - traefik.enable=false
 
   teltonika-device:
     image: openfms/teltonikadevice:latest
@@ -150,8 +124,6 @@ services:
       avldb-migrations:
         condition: service_completed_successfully
     restart: always
-    labels:
-      - traefik.enable=false
 
   tracking-api:
     image: openfms/tracking-api:latest
@@ -174,8 +146,6 @@ services:
       avldb-migrations:
         condition: service_completed_successfully
     restart: always
-    labels:
-      - traefik.enable=false
 
   user-api:
     image: openfms/user-api:latest
@@ -207,8 +177,6 @@ services:
       avldb-migrations:
         condition: service_completed_successfully
     restart: always
-    labels:
-      - "traefik.enable=false"
 
   grpc-gateway:
     image: openfms/grpc-gateway:latest
@@ -226,20 +194,6 @@ services:
       user-api:
         condition: service_started
     restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grpc-gateway.entrypoints=web"
-      - "traefik.http.routers.grpc-gateway.rule=PathPrefix(`/api/v1`)"
-      - "traefik.http.services.grpc-gateway.loadbalancer.server.port=5000"
-      - "traefik.docker.network=fmsnet"
-      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Headers=Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
-      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Origin=*"
-      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Methods=GET,POST,DELETE,OPTIONS,PUT"
-      - "traefik.http.middlewares.cors.headers.accessControlAllowMethods=GET,POST,DELETE,OPTIONS,PUT"
-      - "traefik.http.middlewares.cors.headers.accessControlAllowHeaders=Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
-      - "traefik.http.middlewares.cors.headers.accessControlAllowOriginList=*"
-      - "traefik.http.middlewares.cors.headers.accessControlMaxAge=100"
-      - "traefik.http.middlewares.cors.headers.addVaryHeader=true"
 
   traefik:
     image: traefik:v2.9.10
@@ -248,14 +202,12 @@ services:
       - "80:80"
       - "443:443"
       - "8080:8080"
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    #      - "--providers.docker.useBindPortIP=true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - "./traefik/traefik.yml:/traefik/traefik.yml:ro"
+      - "./traefik/dynamic.yml:/traefik/dynamic.yml:ro"
+    command:
+      - "--configFile=/traefik/traefik.yml"
     restart: always
     networks:
       - fmsnet

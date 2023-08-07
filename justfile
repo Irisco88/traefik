@@ -33,6 +33,12 @@ prod-build:
     @echo "build docker compose production images"
     docker compose -f {{composeFile}} -f {{composeProduction}}  -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
 
+# build docker images for production
 push:prod-build
     @echo "push production images to registry"
     docker compose -f {{composeProduction}} push
+
+# pull production docker images
+prod-pull:
+    @echo "pull production docker images"
+    docker compose -f {{composeFile}} -f {{composeProduction}} --env-file {{composeEnvFile}} pull
