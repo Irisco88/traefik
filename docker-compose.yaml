@@ -232,6 +232,14 @@ services:
       - "traefik.http.routers.grpc-gateway.rule=PathPrefix(`/api/v1`)"
       - "traefik.http.services.grpc-gateway.loadbalancer.server.port=5000"
       - "traefik.docker.network=fmsnet"
+      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Headers=Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
+      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Origin=*"
+      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Methods=GET,POST,DELETE,OPTIONS,PUT"
+      - "traefik.http.middlewares.cors.headers.accessControlAllowMethods=GET,POST,DELETE,OPTIONS,PUT"
+      - "traefik.http.middlewares.cors.headers.accessControlAllowHeaders=Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
+      - "traefik.http.middlewares.cors.headers.accessControlAllowOriginList=*"
+      - "traefik.http.middlewares.cors.headers.accessControlMaxAge=100"
+      - "traefik.http.middlewares.cors.headers.addVaryHeader=true"
 
   traefik:
     image: traefik:v2.9.10
