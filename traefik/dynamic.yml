@@ -9,13 +9,13 @@ http:
         - "cors"
 
     minio-storage:
-      rule: "Host(`minio.openfms.com`)"
+      rule: "Host(`minio.irisco88.com`)"
       service: minio-s3
       entryPoints:
         - web
 
     minio-console:
-      rule: "Host(`minioweb.openfms.com`)"
+      rule: "Host(`minioweb.irisco88.com`)"
       service: minio-dashboard
       entryPoints:
         - web
@@ -29,14 +29,14 @@ http:
     minio-s3:
       loadBalancer:
         servers:
-          - url: "http://openfms-minio:9000"
+          - url: "http://irisco88-minio:9000"
         passHostHeader: true
 
     minio-dashboard:
       loadBalancer:
         passHostHeader: true
         servers:
-          - url: "http://openfms-minio:9001"
+          - url: "http://irisco88-minio:9001"
 
   middlewares:
     cors:

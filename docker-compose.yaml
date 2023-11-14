@@ -2,7 +2,7 @@ version: "3.9"
 services:
   clickhousedb:
     image: clickhouse/clickhouse-server:23.6.2.18-alpine
-    container_name: openfms-clickhouse
+    container_name: irisco88-clickhouse
     ports:
       - ${CH_HTTP_PORT:-8123}:8123
       - ${CH_PORT:-9000}:9000
@@ -24,7 +24,7 @@ services:
 
   minio:
     image: minio/minio:RELEASE.2023-07-21T21-12-44Z
-    container_name: openfms-minio
+    container_name: irisco88-minio
     restart: always
     ports:
       - "${MINIO_PORT-9000}:9000"
@@ -47,7 +47,7 @@ services:
 
   postgresdb:
     image: postgres:12-alpine3.18
-    container_name: openfms-postgres
+    container_name: irisco88-postgres
     ports:
       - ${PGDB_PORT:-5432}:5432
     volumes:
@@ -70,7 +70,7 @@ services:
 
   nats:
     image: nats:2.9.20-linux
-    container_name: openfms-nats
+    container_name: irisco88-nats
     ports:
       - ${NATS_PORT:-4222}:4222
       - ${NATS_HTTP_PORT:-8222}:8222
@@ -78,8 +78,8 @@ services:
       - fmsnet
 
   avldb-migrations:
-    image: openfms/avldb-migrations:latest
-    container_name: openfms-avldb-migrations
+    image: irisco88/avldb-migrations
+    container_name: irisco88-avldb-migrations
     environment:
       DATABASE_DRIVER: clickhouse
       MIGRATIONS_PATH: migrations/sqls
@@ -92,8 +92,8 @@ services:
       - fmsnet
 
   userdb-migrations:
-    image: openfms/userdb-migrations:latest
-    container_name: openfms-userdb-migrations
+    image: irisco88/userdb-migrations
+    container_name: irisco88-userdb-migrations
     environment:
       DATABASE_DRIVER: pgx
       MIGRATIONS_PATH: migrations/sqls
@@ -106,8 +106,8 @@ services:
       - fmsnet
 
   teltonika-device:
-    image: openfms/teltonikadevice:latest
-    container_name: openfms-teltonika-device
+    image: irisco88/teltonikadevice
+    container_name: irisco88-teltonika-device
     ports:
       - ${DEVICE_SRV_PORT:-6060}:3000
     environment:
@@ -126,8 +126,8 @@ services:
     restart: always
 
   tracking-api:
-    image: openfms/tracking-api:latest
-    container_name: openfms-tracking
+    image: irisco88/tracking-api
+    container_name: irisco88-tracking
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
@@ -148,8 +148,8 @@ services:
     restart: always
 
   user-api:
-    image: openfms/user-api:latest
-    container_name: openfms-userapi
+    image: irisco88/user-api
+    container_name: irisco88-userapi
     environment:
       NATS: "nats:4222"
       LOG_REQUESTS: true
@@ -179,8 +179,8 @@ services:
     restart: always
 
   grpc-gateway:
-    image: openfms/grpc-gateway:latest
-    container_name: openfms-gateway
+    image: irisco88/grpc-gateway
+    container_name: irisco88-gateway
     environment:
       TRACKING_ENDPOINT: "tracking-api:6000"
       USER_ENDPOINT: "user-api:6000"
@@ -197,7 +197,7 @@ services:
 
   traefik:
     image: traefik:v2.9.10
-    container_name: openfms-traefik
+    container_name: irisco88-traefik
     ports:
       - "80:80"
       - "443:443"

@@ -21,7 +21,7 @@ dcompose-clean:
 # builds docker images
 dcompose-build:
     @echo "build docker compose images"
-    docker compose -f {{composeFile}} -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
+    docker compose -f {{composeFile}} -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="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"
 
 # run production images
 prod-up:
@@ -31,7 +31,7 @@ prod-up:
 # build production images
 prod-build:
     @echo "build docker compose production images"
-    docker compose -f {{composeFile}} -f {{composeProduction}}  -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="$GITHUB_TOKEN"
+    docker compose -f {{composeFile}} -f {{composeProduction}}  -f {{composeBuild}} --env-file {{composeEnvFile}} build --build-arg GITHUB_TOKEN="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"
 
 # build docker images for production
 push:prod-build

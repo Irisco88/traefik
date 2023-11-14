@@ -1,46 +1,46 @@
 projects:
   fms3main:
     path: .
-    url: git@github.com:openfms/openfms-main.git
+    url: git@github.com:irisco88/openfms-main.git
   
   protos:
     path: protos
-    url: git@github.com:openfms/protos.git
+    url: git@github.com:irisco88/protos.git
     desc: all protos of system
   
   avldb-migrations:
     path: migrations/avldb
-    url: git@github.com:openfms/avldb.git
+    url: git@github.com:irisco88/avldb.git
     desc: avl db clickhouse migrations
 
   teltonika-device:
     path: device/teltonika
-    url: git@github.com:openfms/teltonika-device.git
+    url: git@github.com:irisco88/teltonika-device.git
     desc: teltonika device service
 
   tracking-api:
     path: fmsapi/tracking-api
-    url: git@github.com:openfms/tracking-api.git
+    url: git@github.com:irisco88/tracking-api.git
     desc: tracking api
 
   user-api:
     path: user-api
-    url: git@github.com:openfms/user-api.git
+    url: git@github.com:irisco88/user-api.git
     desc: user api
 
   user-db:
     path: migrations/user-db
-    url: git@github.com:openfms/user-db.git
+    url: git@github.com:irisco88/user-db.git
     desc: user api
 
   authutil:
     path: authutil
-    url: git@github.com:openfms/authutil.git
+    url: git@github.com:irisco88/authutil.git
     desc: auth util
 
   gateway:
     path: gateway
-    url: git@github.com:openfms/gateway.git
+    url: git@github.com:irisco88/gateway.git
     desc: grpc gateway
   
 tasks:
