@@ -12,14 +12,14 @@ services:
 
   teltonika-device:
     build:
-      context: ./device/teltonika
+      context: ./teltonika-device
       dockerfile: Dockerfile
       args:
         GO_VERSION: "1.20"
 
   tracking-api:
     build:
-      context: ./fmsapi/tracking-api
+      context: ./tracking-api
       dockerfile: Dockerfile
       args:
         GO_VERSION: "1.20"

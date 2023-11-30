@@ -1,6 +1,7 @@
 composeFile := "docker-compose.yaml"
 composeEnvFile := "compose.env"
-composeProduction := "compose.prod.yaml"
+#composeProduction := "compose.prod.yaml"
+composeProduction := "docker-compose.yaml"
 composeBuild := "compose.build.yaml"
 
 # run docker compose up
